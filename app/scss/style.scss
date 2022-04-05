@@ -13,6 +13,8 @@ body {
     // position: relative;
     background-color: $default;
     width: calc(#{$defaultWidth} - #{$backlogWidth});
+    height: $defaultHeight;
+    overflow-y: auto;
 
 }
 
@@ -101,6 +103,12 @@ body {
         left: 50%;
         top: -15%;
         transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-height: 100px;
+        height: 100%;
+        overflow-y: auto;
         max-width: 350px;
         width: 100%;
         z-index: 1;
@@ -156,22 +164,20 @@ body {
 
 
 
-
-
-
-
-
-
-
+.backlog-btn-show {
+    display: none;
+}
 
 
 .backlog {
+    position: relative;
     width: $backlogWidth;
-    height: $backlogHeight;
+    height: $defaultHeight;
     overflow-y: auto;
     background-color: $backlogColor;
-    margin-left: 4px;
+    margin-left: 1px;
     border-left: 1px solid #000;
+    margin-bottom: 60px;
 
     &__inner {
         padding: 20px 10px 0 10px;
@@ -182,7 +188,15 @@ body {
         text-align: center;
         font-size: 30px;
         font-style: italic;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    &__close-img {
+        display: none;
+        position: absolute;
+        width: 30px;
+        right: 20px;
+        top: 20px;
     }
 }
 
@@ -250,5 +264,239 @@ body {
 
     &__text {
         color: $black;
+    }
+}
+
+
+
+
+@media (max-width: 1300px) {
+    .personal-cards {
+        height: 175px;
+
+        &__executor {
+            font-size: 20px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 18px;
+        }
+
+    }
+}
+
+@media (max-width: 1250px) {
+    .personal-cards {
+        height: 175px;
+
+        &__executor {
+            font-size: 20px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 14px;
+        }
+
+    }
+}
+
+@media (max-width: 1200px) {
+    .personal-cards {
+        height: 130px;
+
+        &__executor {
+            font-size: 20px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 12px;
+        }
+
+    }
+}
+
+
+@media (max-width: 1120px) {
+    .container {
+        top: 30%;
+        transform: translateX(-50%);
+
+        &__content {
+            flex-direction: column;
+        }
+    }
+
+    .planner {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .tasks {
+
+        &__item:hover::after {
+            top: -15%;
+        }
+    }
+
+    .backlog {
+        width: 100%;
+        border-left: none;
+        margin-left: 0px;
+    }
+
+
+    .tasks-info {
+        &__item {
+            // text-align: center;
+        }
+    }
+}
+
+
+
+
+
+@media (max-width: 650px) {
+    .personal-cards {
+        height: 130px;
+
+        &__executor {
+            font-size: 16px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 12px;
+        }
+
+    }
+}
+
+
+
+@media (max-width: 550px) {
+
+    .personal-cards {
+        height: 130px;
+
+        &__executor {
+            font-size: 13px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 10px;
+        }
+
+    }
+
+    .dates {
+        font-size: 13px;
+    }
+}
+
+
+
+@media (max-width: 450px) {
+
+    .personal-cards {
+        height: 130px;
+
+        &__executor {
+            font-size: 11px;
+        }
+    }
+
+    .tasks {
+        font-weight: 700;
+
+        &__item {
+            font-size: 8px;
+        }
+
+    }
+
+    .dates {
+        font-size: 12px;
+    }
+
+    .backlog-btn-show {
+        display: flex;
+        align-items: center;
+        width: fit-content;
+        padding: 10px 30px;
+        margin-bottom: 50px;
+
+        &__img {
+            width: 20px;
+            margin-right: 10px;
+        }
+    }
+
+    .backlog {
+        display: none;
+
+        &__close-img {
+            display: block;
+        }
+    }
+}
+
+
+
+@media (max-width: 390px) {
+    .personal-cards {
+        height: 100px;
+
+        &__executor {
+            font-size: 10px;
+        }
+    }
+
+    .tasks {
+
+        &__item {
+            font-size: 6px;
+        }
+
+    }
+
+    .dates {
+        font-size: 12px;
+    }
+}
+
+
+@media (max-width: 390px) {
+    .personal-cards {
+        height: 100px;
+
+        &__executor {
+            font-size: 8px;
+        }
+    }
+
+    .tasks {
+        &__item {
+            font-size: 5px;
+        }
+
+    }
+
+    .dates {
+        font-size: 10px;
     }
 }
