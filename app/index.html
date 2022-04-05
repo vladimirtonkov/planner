@@ -39,9 +39,9 @@
           <li class="dates__num">23.05</li>
           <li class="dates__num">23.05</li>
         </ul>
-        <ul class="plannet__task-item personal-cards">
-          <li class="personal-cards__item personal-cards__executor">Артем</li>
-          <li class="personal-cards__item">
+        <div class="plannet__task-item personal-cards">
+          <div class="personal-cards__item personal-cards__executor">Артем</div>
+          <div class="personal-cards__item">
             <ul class="tasks">
               <li class="tasks__item tasks__info-data" data-title="Задача 1 (5ч)">
                 <spna class="tasks__title">Задача 1</spna>
@@ -56,46 +56,50 @@
                 <span class="tasks__time">3ч</span>
               </li>
             </ul>
-          </li>
-          <li class="personal-cards__item tasks__info-data"></li>
-          <li class="personal-cards__item tasks__info-data">
+          </div>
+          <div class="personal-cards__item tasks__info-data"></div>
+          <div class="personal-cards__item tasks__info-data">
             <ul class="tasks">
               <li class="tasks__item tasks__info-data" data-title="Задача 1 (5ч)">
                 <spna class="tasks__title">Задача 1</spna>
                 <span class="tasks__time">5ч</span>
               </li>
-              <li class="tasks__item">
-                <spna class="tasks__title" data-title="Задача 1 (21ч)">Задача 1</spna>
+              <li class="tasks__item" data-title="Задача 1 (21ч)">
+                <spna class="tasks__title">Задача 1</spna>
                 <span class="tasks__time">21ч</span>
               </li>
             </ul>
-          </li>
-          <li class="personal-cards__item tasks__info-data"></li>
-          <li class="personal-cards__item tasks__info-data"></li>
-          <li class="personal-cards__item tasks__info-data"></li>
-          <li class="personal-cards__item tasks__info-data"></li>
-        </ul>
-        <ul class="plannet__task-item personal-cards">
-          <li class="personal-cards__item personal-cards__executor">Дима</li>
-          <li class="personal-cards__item"></li>
-          <li class="personal-cards__item"></li>
-          <li class="personal-cards__item"></li>
-          <li class="personal-cards__item">
+          </div>
+          <div class="personal-cards__item tasks__info-data"></div>
+          <div class="personal-cards__item tasks__info-data"></div>
+          <div class="personal-cards__item tasks__info-data"></div>
+          <div class="personal-cards__item tasks__info-data"></div>
+        </div>
+        <div class="plannet__task-item personal-cards">
+          <div class="personal-cards__item personal-cards__executor">Дима</div>
+          <div class="personal-cards__item"></div>
+          <div class="personal-cards__item"></div>
+          <div class="personal-cards__item"></div>
+          <div class="personal-cards__item">
             <ul class="tasks">
               <li class="tasks__item tasks__info-data" data-title="Задача 1 (1ч)">
                 <spna class="tasks__title">Задача 1</spna>
                 <span class="tasks__time">1ч</span>
               </li>
             </ul>
-          </li>
+          </div>
           <li class="personal-cards__item"></li>
           <li class="personal-cards__item"></li>
           <li class="personal-cards__item"></li>
-        </ul>
+        </div>
       </div>
+      <button class="backlog-btn-show btn-reset">
+        <img class="backlog-btn-show__img" src="./images/backlog-burger.png" alt="">
+        <span class="backlog-btn-show__title">Backlog</span></button>
         <div class="backlog">
           <div class="backlog__inner">
             <h2 class="backlog__title">Backlog</h2>
+            <img class="backlog__close-img" src="./images/close.png" alt="">
             <div class="backlog__search-box search">
               <input class="search__input" type="text" placeholder="Поиск" />
               <button class="search__button btn-reset">
@@ -116,7 +120,7 @@
               <li class="tasks-info__item">
                 <h5 class="tasks-info__title">ELMA-1011</h5>
                 <p class="tasks-info__text">
-                  Не приходят PUSH уведомления на Android
+                  Не приходят PUSH уведомления на Android 
                 </p>
               </li>
               <li class="tasks-info__item">
