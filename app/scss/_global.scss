@@ -1,0 +1,83 @@
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+ul,
+li {
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	list-style-type: none;
+}
+
+table,
+tbody,
+tr,
+td {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+body {
+	position: relative;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 27px;
+	color: $black;
+	overflow-x: hidden;
+	// min-width: 320px;
+}
+
+
+
+
+.container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0 auto;
+	// max-width: 1420px;
+	width: 100%;
+	padding: 0 10px;
+
+	&__content {
+		display: flex;
+		justify-content: space-between;
+		// background-color: $default;
+	}
+}
+
+
+.btn-reset {
+	outline: none;
+	border: none;
+	cursor: pointer;
+	background-color: #fff;
+}
+
+.slider-btn-padding {
+	color: $default;
+	background-color: $lightGreen;
+	padding-top: $buttonSliderPaddingTop;
+	padding-bottom: $buttonSliderPaddingBottom;
+	padding-left: $buttonSliderPaddingLeft;
+	padding-right: $buttonSliderPaddingRight;
+	border-radius: $btnRadius;
+	transition: all .3s;
+}
+
+.slider-btn-padding:hover {
+	background-color: $black;
+}
