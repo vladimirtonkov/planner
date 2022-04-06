@@ -1,12 +1,11 @@
 
+const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
+const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
+
 
 const liElementFromBacklog = document.querySelectorAll('.tasks-info__item');
 const planner = document.querySelector('.planner');
-// const createUlTasks = document.createElement('ul');
-// createUlTasks.className = 'tasks';
 
-const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
-const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
 
 const DATE = new Date();
 const DAY = DATE.getDate()
