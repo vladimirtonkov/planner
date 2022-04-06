@@ -81,20 +81,20 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-
     overflow-y: auto;
+    color: $black;
 
     &__item {
         // position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content: center;
         height: 100%;
         border: 1px solid $lightGray;
         padding: 5px;
         overflow-y: auto;
         overflow-x: hidden;
-        font-size: 20px;
+        font-size: 16px;
     }
 
     &__item:hover::after {
@@ -268,6 +268,11 @@ body {
 }
 
 
+
+
+.drag-border {
+    border: dashed 3px blue;
+}
 
 
 @media (max-width: 1300px) {
