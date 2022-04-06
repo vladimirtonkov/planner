@@ -5,6 +5,9 @@ const planner = document.querySelector('.planner');
 // const createUlTasks = document.createElement('ul');
 // createUlTasks.className = 'tasks';
 
+const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
+const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
+
 const DATE = new Date();
 const DAY = DATE.getDate()
 const MONTH = DATE.getMonth();
@@ -19,7 +22,7 @@ let arrDate = [];
 
 
 //promise
-fetch('https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks')
+fetch(URL_TASKS)
     .then((response) => {
         return response.json()
     })
@@ -31,7 +34,7 @@ fetch('https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78
     })
 
 
-fetch('https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users')
+fetch(URL_USERS)
     .then((response) => {
         return response.json()
     })
