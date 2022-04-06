@@ -18,9 +18,9 @@ if (MONTH + 1 < 10) {
 }
 let CURRENT_YEAR = DATE.getFullYear()
 let arrDate = [];
+//maybe add promise
 
 
-//promise
 fetch(URL_TASKS)
     .then((response) => {
         return response.json()
@@ -81,7 +81,6 @@ function setEventDragOnDrop() {
         card.addEventListener('drop', drop);
     })
 
-    // console.log('-ffffff', liElementFromBacklog)
     liElementFromBacklog.forEach(elem => {
         elem.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', e.target.id)
@@ -95,8 +94,6 @@ function showTaskData(dataTasks) {
     const taskInfo = document.querySelector('.tasks-info')
     dataTasks.forEach((item, counter) => {
         if (item.executor !== null) {
-            // console.log(personalCards[item.executor - 1])
-            console.log(item)
             let cell = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
             for (let index = 0; index < cell.length; index++) {
                 if (cell[index].dataset.calendarDate === item.planStartDate) {
@@ -168,7 +165,6 @@ function gragLeave(event) {
 function drop(event) {
     const element = event.dataTransfer.getData('text/plain');
     const draggableElement = document.getElementById(element);
-    console.log('ffffffff ', draggableElement.children[0])
     const title = draggableElement.querySelector('.tasks-info__title').textContent;
     const text = draggableElement.querySelector('.tasks-info__text').textContent;
 
