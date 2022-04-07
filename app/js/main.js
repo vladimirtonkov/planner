@@ -5,44 +5,81 @@ const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-
 
 const liElementFromBacklog = document.querySelectorAll('.tasks-info__item');
 const planner = document.querySelector('.planner');
+const SliderWeekLeftButton = document.querySelector('.buttons-slider__left');
+const SliderWeekRightButton = document.querySelector('.buttons-slider__right');
 
 
 const DATE = new Date();
-const DAY = DATE.getDate()
-const MONTH = DATE.getMonth();
+let DAY = DATE.getDate()
+let MONTH = DATE.getMonth();
 let CURRENT_MONTH = ''
-if (MONTH + 1 < 10) {
-    CURRENT_MONTH = '0' + (MONTH + 1);
-} else {
-    CURRENT_MONTH = (MONTH + 1);
-}
+
 let CURRENT_YEAR = DATE.getFullYear()
+let numberOfDaysInMonth = 0;
 let arrDate = [];
+let ARR_MONTH = [];
 
 
-//promise
-fetch(URL_TASKS)
-    .then((response) => {
-        return response.json()
-    })
-    .then((data) => {
-        showTaskData(data)
-    })
-    .catch((error) => {
-        console.log(`Message error: ${error.message}`)
-    })
+
+setMonthAndYear();
+function setMonthAndYear() {
+    numberOfDaysInMonth = new Date(CURRENT_YEAR, MONTH + 1, 0).getDate();
+    console.log('numberOfDaysInMonth', numberOfDaysInMonth)
+}
+
+setCurrentMonth()
+function setCurrentMonth() {
+    for (let k = 0; k < 7; k++) {
+        if (MONTH + 1 < 10) {
+            CURRENT_MONTH = '0' + (MONTH + 1);
+            ARR_MONTH.push('0' + (MONTH + 1))
+        } else {
+            CURRENT_MONTH = (MONTH + 1);
+            ARR_MONTH.push(MONTH + 1)
+        }
+    }
+
+    console.log(ARR_MONTH)
+
+}
 
 
-fetch(URL_USERS)
-    .then((response) => {
-        return response.json()
-    })
-    .then((data) => {
-        showUsers(data)
-    })
-    .catch((error) => {
-        console.log(`Message error: ${error.message}`)
-    })
+async function getTasks(URL, repeatNtimes) {
+    try {
+        const response = await fetch(URL);
+        if (!response.ok) {
+            const textMessage = "Error Status code: " + response.status;
+            throw new Error(textMessage);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        if (n === 1) {
+            throw new Error;
+        }
+        return await getTasks(URL, repeatNtimes);
+    }
+}
+
+getTasks(URL_TASKS, 10).then(result => showTaskData(result))
+
+async function getUsers(URL, repeatNtimes) {
+    try {
+        const response = await fetch(URL);
+        if (!response.ok) {
+            const textMessage = "Error Status code: " + response.status;
+            throw new Error(textMessage);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        if (n === 1) {
+            throw new Error;
+        }
+        return await getTasks(URL, repeatNtimes);
+    }
+}
+getUsers(URL_USERS, 10).then(result => showUsers(result))
 
 
 function showUsers(dataUsers) {
@@ -61,7 +98,7 @@ function showUsersTasks() {
     personalCards.forEach(card => {
         for (let i = 0; i < 7; i++) {
             card.insertAdjacentHTML('beforeEnd', `
-                <div class="personal-cards__item" data-calendar-date=${CURRENT_YEAR}-${CURRENT_MONTH}-${arrDate[i]}></div>
+                <div class="personal-cards__item" data-calendar-date=${CURRENT_YEAR}-${ARR_MONTH[i]}-${arrDate[i]}></div>
             `)
         }
 
@@ -92,17 +129,17 @@ function setEventDragOnDrop() {
 
 function showTaskData(dataTasks) {
     const personalCards = document.querySelectorAll('.personal-cards');
-    const taskInfo = document.querySelector('.tasks-info')
+    const taskInfo = document.querySelector('.tasks-info');
+    let cellAddUlTask = document.querySelectorAll('.personal-cards__item');
+
     dataTasks.forEach((item, counter) => {
         if (item.executor !== null) {
-            // console.log(personalCards[item.executor - 1])
-            console.log(item)
-            let cell = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
-            for (let index = 0; index < cell.length; index++) {
-                if (cell[index].dataset.calendarDate === item.planStartDate) {
-                    cell[index].insertAdjacentHTML('beforeEnd', `
+            let cellAddExecutor = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
+            for (let index = 0; index < cellAddExecutor.length; index++) {
+                if (cellAddExecutor[index].dataset.calendarDate === item.planStartDate) {
+                    cellAddExecutor[index].insertAdjacentHTML('beforeEnd', `
                         <ul class="tasks">
-                            <li class="tasks__item tasks__info-data" data-title=${item.subject} ' ' ${item.description}>
+                            <li class="tasks__item" data-title=${item.subject} ' ' ${item.description}>
                                 <span class="tasks__title">${item.subject}</span>
                                 <span class="tasks__time">${item.description}</span>
                             </li>
@@ -112,15 +149,28 @@ function showTaskData(dataTasks) {
             }
         } else {
             taskInfo.insertAdjacentHTML('beforeEnd', `
-            <li class="tasks-info__item" id=${counter + 1} draggable="true">
+            <li class="tasks-info__item" id=${counter + 1} data-start-date=${item.planStartDate} draggable="true">
                 <span class="tasks-info__title">${item.subject}</span>
                 <span class="tasks-info__text">${item.description}</span>
             </li>
         `)
         }
     })
+    for (let index = 0; index < cellAddUlTask.length; index++) {
+        if (!cellAddUlTask[index].closest('.personal-cards__executor') && cellAddUlTask[index].querySelector('.tasks') === null) {
+            cellAddUlTask[index].insertAdjacentHTML('beforeEnd', `
+                        <ul class="tasks"></ul>
+                    `)
+        }
+    }
 
     setEventDragOnDrop()
+
+    if (document.querySelector('.container').closest('.opacity-background')) {
+        document.querySelector('.container').classList.remove('opacity-background')
+        document.querySelector('.loading').style.display = 'none';
+    }
+    removeDisableForButtons()
 }
 
 
@@ -168,36 +218,159 @@ function gragLeave(event) {
 function drop(event) {
     const element = event.dataTransfer.getData('text/plain');
     const draggableElement = document.getElementById(element);
-    console.log('ffffffff ', draggableElement.children[0])
     const title = draggableElement.querySelector('.tasks-info__title').textContent;
     const text = draggableElement.querySelector('.tasks-info__text').textContent;
 
     event.currentTarget.classList.remove('drag-border');
 
+
     if (!event.currentTarget.closest('.personal-cards__executor')) {
-        if (event.currentTarget.querySelector('.tasks') !== null) {
-            draggableElement.classList.remove();
-            draggableElement.className = (event.currentTarget.querySelector('.tasks__item').className || 'tasks__item');
 
-            draggableElement.setAttribute('draggable', false);
-            draggableElement.setAttribute('data-title', `${title}` + `${text}`);
-            event.currentTarget.querySelector('.tasks').appendChild(draggableElement);
-        } else {
-            const createUlTasks = document.createElement('ul');
-            createUlTasks.className = 'tasks';
-            event.currentTarget.append(createUlTasks);
+        removeAndAddTasksClassFromAnDraggElem(draggableElement)
 
-            draggableElement.classList.remove();
-            draggableElement.className = 'tasks__item';
-            draggableElement.setAttribute('draggable', false);
-            draggableElement.setAttribute('data-title', `${title}` + `${text}`);
-            createUlTasks.appendChild(draggableElement)
+        draggableElement.setAttribute('draggable', false);
+        draggableElement.setAttribute('data-title', `${title}` + `${text}`);
+        event.currentTarget.querySelector('.tasks').appendChild(draggableElement);
 
-        }
     } else {
+
+        let currentParent = event.currentTarget.parentNode.children;
+        for (let i = 0; i < currentParent.length; i++) {
+
+            if (currentParent[i].dataset.calendarDate === draggableElement.dataset.startDate) {
+                removeAndAddTasksClassFromAnDraggElem(draggableElement)
+
+                draggableElement.setAttribute('draggable', false);
+                draggableElement.setAttribute('data-title', `${title}` + `${text}`);
+                currentParent[i].querySelector('.tasks').append(draggableElement)
+            }
+        }
 
     }
 
 
+}
 
+
+
+function removeAndAddTasksClassFromAnDraggElem(draggable) {
+    draggable.classList.remove();
+    draggable.className = 'tasks__item';
+    draggable.children[0].classList.remove('tasks-info__title');
+    draggable.children[0].classList.add('tasks__title');
+    draggable.children[1].classList.remove('tasks-info__title');
+    draggable.children[1].classList.add('tasks__text');
+}
+
+
+SliderWeekLeft();
+
+function SliderWeekLeft() {
+    SliderWeekLeftButton.addEventListener('click', () => {
+        const dates = document.querySelector('.dates');
+        const personalCards = document.querySelectorAll('.personal-cards');
+
+        SliderWeekRightButton.removeAttribute('disabled');
+        DAY = DAY - 1;
+        dates.querySelectorAll('.dates__num').forEach(calendarDate => {
+            if (!calendarDate.closest('.dates__num--borderNone')) {
+                calendarDate.remove();
+            }
+        })
+        arrDate = [];
+        if (DAY === 0) {
+            MONTH--;
+            if (MONTH <= -1) {
+                // MONTH = 11;
+                DAY++
+                MONTH = 0;
+                SliderWeekLeftButton.setAttribute('disabled', "disabled");
+            } else {
+                console.log('MONTH ', MONTH)
+                setMonthAndYear();
+                // console.log('numberOfDaysInMonth ', numberOfDaysInMonth)
+                DAY = numberOfDaysInMonth - 6;
+                ARR_MONTH = [];
+                setCurrentMonth();
+            }
+
+        }
+        setCalendarDate()
+
+
+        personalCards.forEach(cardItem => {
+            cardItem.remove()
+        })
+        getUsers(URL_USERS, 10).then(result => showUsers(result))
+        getTasks(URL_TASKS, 10).then(result => showTaskData(result))
+
+        document.querySelector('.container').classList.add('opacity-background')
+        document.querySelector('.loading').style.display = 'block';
+
+        setDisableForButtons()
+
+    })
+}
+
+SliderWeekRight();
+function SliderWeekRight() {
+    SliderWeekRightButton.addEventListener('click', () => {
+        const dates = document.querySelector('.dates');
+        const personalCards = document.querySelectorAll('.personal-cards');
+        const ExecutorUser = document.querySelector('.personal-cards__executor');
+
+        SliderWeekLeftButton.removeAttribute('disabled');
+        DAY = DAY + 1;
+        dates.querySelectorAll('.dates__num').forEach(calendarDate => {
+            if (!calendarDate.closest('.dates__num--borderNone')) {
+                calendarDate.remove();
+            }
+        })
+        arrDate = [];
+        console.log('dat ', DAY + 6);
+        if (DAY + 6 > numberOfDaysInMonth) {
+            MONTH++;
+            if (MONTH >= 12) {
+                // MONTH = 0;
+                MONTH = 11;
+                DAY--;
+                SliderWeekRightButton.setAttribute('disabled', "disabled");
+
+            } else {
+                DAY = 1;
+                ARR_MONTH = [];
+                setMonthAndYear();
+                setCurrentMonth();
+            }
+
+        }
+        setCalendarDate()
+
+
+        personalCards.forEach(cardItem => {
+            cardItem.remove()
+        })
+        getUsers(URL_USERS, 10).then(result => showUsers(result))
+        getTasks(URL_TASKS, 10).then(result => showTaskData(result))
+
+        document.querySelector('.container').classList.add('opacity-background')
+        document.querySelector('.loading').style.display = 'block';
+
+        setDisableForButtons()
+
+    })
+}
+
+
+setDisableForButtons()
+
+function setDisableForButtons() {
+    SliderWeekRightButton.setAttribute('disabled', "disabled");
+    SliderWeekLeftButton.setAttribute('disabled', "disabled");
+}
+
+
+function removeDisableForButtons() {
+    SliderWeekRightButton.removeAttribute('disabled', "disabled");
+    SliderWeekLeftButton.removeAttribute('disabled', "disabled");
 }
