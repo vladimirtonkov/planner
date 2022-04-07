@@ -24,7 +24,6 @@ let ARR_MONTH = [];
 setMonthAndYear();
 function setMonthAndYear() {
     numberOfDaysInMonth = new Date(CURRENT_YEAR, MONTH + 1, 0).getDate();
-    console.log('numberOfDaysInMonth', numberOfDaysInMonth)
 }
 
 setCurrentMonth()
@@ -38,8 +37,6 @@ function setCurrentMonth() {
             ARR_MONTH.push(MONTH + 1)
         }
     }
-
-    console.log(ARR_MONTH)
 
 }
 
@@ -61,7 +58,7 @@ async function getTasks(URL, repeatNtimes) {
     }
 }
 
-getTasks(URL_TASKS, 10).then(result => showTaskData(result))
+getTasks(URL_TASKS, 10).then(result => showTaskData(result));
 
 async function getUsers(URL, repeatNtimes) {
     try {
@@ -118,7 +115,6 @@ function setEventDragOnDrop() {
         card.addEventListener('drop', drop);
     })
 
-    // console.log('-ffffff', liElementFromBacklog)
     liElementFromBacklog.forEach(elem => {
         elem.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', e.target.id)
@@ -286,9 +282,7 @@ function SliderWeekLeft() {
                 MONTH = 0;
                 SliderWeekLeftButton.setAttribute('disabled', "disabled");
             } else {
-                console.log('MONTH ', MONTH)
                 setMonthAndYear();
-                // console.log('numberOfDaysInMonth ', numberOfDaysInMonth)
                 DAY = numberOfDaysInMonth - 6;
                 ARR_MONTH = [];
                 setCurrentMonth();
@@ -327,7 +321,6 @@ function SliderWeekRight() {
             }
         })
         arrDate = [];
-        console.log('dat ', DAY + 6);
         if (DAY + 6 > numberOfDaysInMonth) {
             MONTH++;
             if (MONTH >= 12) {
