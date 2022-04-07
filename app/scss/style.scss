@@ -35,10 +35,24 @@ body {
         margin: 5px;
     }
 
+    &__left:disabled {
+        border: 1px solid #999999;
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
+    }
+
     &__right {
         position: absolute;
         right: 0;
         margin: 5px;
+    }
+
+    &__right:disabled {
+        border: 1px solid #999999;
+        background-color: #cccccc;
+        color: #666666;
+        cursor: not-allowed;
     }
 }
 
@@ -85,16 +99,17 @@ body {
     color: $black;
 
     &__item {
-        // position: relative;
-        // display: flex;
-        // flex-direction: column;
-        // justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 100%;
         border: 1px solid $lightGray;
         padding: 5px;
         overflow-y: auto;
         overflow-x: hidden;
-        font-size: 16px;
+        font-size: 14px;
+        background-color: $lightGreen;
+        color: $default;
     }
 
     &__item:hover::after {
@@ -112,7 +127,8 @@ body {
         max-width: 350px;
         width: 100%;
         z-index: 1;
-        background: rgba(255, 255, 230, 0.9);
+        background-color: rgba(255, 255, 230, 0.9);
+        color: $black;
         font-size: 20px;
         padding: 10px 20px;
         border: 1px solid $lightGray;
@@ -140,6 +156,7 @@ body {
     align-items: center;
     border-bottom: 1px solid;
     height: 150px;
+    font-size: 20px;
 
     &__item {
         // width: 100%;
@@ -157,7 +174,7 @@ body {
         background-color: $green;
         color: $default;
         font-weight: 700;
-        font-size: 25px;
+        border-right: 3px solid $black;
     }
 }
 
@@ -273,6 +290,38 @@ body {
 .drag-border {
     border: dashed 3px blue;
 }
+
+
+.opacity-background {
+    opacity: 0.5;
+}
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    width: 150px;
+    height: 150px;
+    border: 10px solid rgba(255, 255, 255, .3);
+    border-radius: 50%;
+    z-index: 200;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
 
 
 @media (max-width: 1300px) {
