@@ -368,9 +368,6 @@ function SliderWeekRight() {
         setDisableForButtons()
 
 
-        shifts++;
-        localStorage.setItem('shifts', shifts)
-        localStorage.setItem('mathematicalSign', '-')
 
 
     })
@@ -422,12 +419,6 @@ function searchTaskFromBacklog() {
         }
     })
 }
-
-
-
-
-
-
 
 
 
