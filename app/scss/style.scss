@@ -307,17 +307,17 @@ body {
 
 .loading {
     position: absolute;
+    display: block;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    display: block;
     width: 150px;
     height: 150px;
     border: 10px solid rgba(255, 255, 255, .3);
     border-radius: 50%;
     z-index: 200;
     border-top-color: #000;
-    animation: spin 2s ease-in-out infinite;
+    animation: spin 2.5s ease-in-out infinite;
 }
 
 @keyframes spin {
