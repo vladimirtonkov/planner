@@ -1,7 +1,9 @@
 
+// Можно в отдельный файл перекинуть
 const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
 const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
 
+// Можно все константы которые используются в проекте вынести в отдельные переменные
 
 const liElementFromBacklog = document.querySelectorAll('.tasks-info__item');
 const planner = document.querySelector('.planner');
@@ -19,6 +21,8 @@ let numberOfDaysInMonth = 0;
 let arrDate = [];
 let ARR_MONTH = [];
 
+let ArrLocalStorage = [];
+let shifts = 0;
 
 
 setMonthAndYear();
@@ -40,7 +44,8 @@ function setCurrentMonth() {
 
 }
 
-
+// Получение данных по задачам с сервера
+// Можно axios в место fetch поменять
 async function getTasks(URL, repeatNtimes) {
     try {
         const response = await fetch(URL);
@@ -60,6 +65,7 @@ async function getTasks(URL, repeatNtimes) {
 
 getTasks(URL_TASKS, 10).then(result => showTaskData(result));
 
+// Получение данных по пользователям с сервера
 async function getUsers(URL, repeatNtimes) {
     try {
         const response = await fetch(URL);
@@ -79,11 +85,12 @@ async function getUsers(URL, repeatNtimes) {
 getUsers(URL_USERS, 10).then(result => showUsers(result))
 
 
+// Выводим пользователей
 function showUsers(dataUsers) {
-    dataUsers.forEach(item => {
+    dataUsers.forEach((item, index) => {
         planner.insertAdjacentHTML('beforeEnd', `
-                <div class="plannet__task-item personal-cards" data-idCard=${item.id}>
-                    <div class="personal-cards__item personal-cards__executor">${item.firstName}</div>
+                <div class="plannet__task-item personal-cards" data-id-card=${item.id}>
+                    <div class="personal-cards__item personal-cards__executor" data-id-person=${index + 1}>${item.firstName}</div>
                 </div>
             `)
     })
@@ -95,7 +102,7 @@ function showUsersTasks() {
     personalCards.forEach(card => {
         for (let i = 0; i < 7; i++) {
             card.insertAdjacentHTML('beforeEnd', `
-                <div class="personal-cards__item" data-calendar-date=${CURRENT_YEAR}-${ARR_MONTH[i]}-${arrDate[i]}></div>
+                <div class="personal-cards__item" data-calendar-date=${CURRENT_YEAR}-${ARR_MONTH[i]}-${arrDate[i]} data-position-cell=${i + 1}></div>
             `)
         }
 
@@ -127,8 +134,9 @@ function showTaskData(dataTasks) {
     const personalCards = document.querySelectorAll('.personal-cards');
     const taskInfo = document.querySelector('.tasks-info');
     let cellAddUlTask = document.querySelectorAll('.personal-cards__item');
-
+    let countElement = []
     dataTasks.forEach((item, counter) => {
+        // Если у задачи не указан исполнитель (executor)
         if (item.executor !== null) {
             let cellAddExecutor = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
             for (let index = 0; index < cellAddExecutor.length; index++) {
@@ -145,7 +153,7 @@ function showTaskData(dataTasks) {
             }
         } else {
             taskInfo.insertAdjacentHTML('beforeEnd', `
-            <li class="tasks-info__item" id=${counter + 1} data-start-date=${item.planStartDate} draggable="true">
+            <li class="tasks-info__item" id=${counter} data-start-date=${item.planStartDate} draggable="true">
                 <span class="tasks-info__title">${item.subject}</span>
                 <span class="tasks-info__text">${item.description}</span>
             </li>
@@ -160,7 +168,9 @@ function showTaskData(dataTasks) {
         }
     }
 
-    setEventDragOnDrop()
+
+    setEventDragOnDrop();
+    searchTaskFromBacklog();
 
     if (document.querySelector('.container').closest('.opacity-background')) {
         document.querySelector('.container').classList.remove('opacity-background')
@@ -168,6 +178,7 @@ function showTaskData(dataTasks) {
     }
     removeDisableForButtons()
 }
+
 
 
 
@@ -242,6 +253,7 @@ function drop(event) {
             }
         }
 
+
     }
 
 
@@ -250,12 +262,16 @@ function drop(event) {
 
 
 function removeAndAddTasksClassFromAnDraggElem(draggable) {
-    draggable.classList.remove();
-    draggable.className = 'tasks__item';
-    draggable.children[0].classList.remove('tasks-info__title');
-    draggable.children[0].classList.add('tasks__title');
-    draggable.children[1].classList.remove('tasks-info__title');
-    draggable.children[1].classList.add('tasks__text');
+
+    if (draggable) {
+        draggable.classList.remove();
+        draggable.className = 'tasks__item';
+        draggable.children[0].classList.remove('tasks-info__title');
+        draggable.children[0].classList.add('tasks__title');
+        draggable.children[1].classList.remove('tasks-info__title');
+        draggable.children[1].classList.add('tasks__text');
+    }
+
 }
 
 
@@ -299,9 +315,10 @@ function SliderWeekLeft() {
         getTasks(URL_TASKS, 10).then(result => showTaskData(result))
 
         document.querySelector('.container').classList.add('opacity-background')
-        document.querySelector('.loading').style.display = 'block';
+        document.querySelector('.loading').style.display = 'flex';
 
         setDisableForButtons()
+
 
     })
 }
@@ -351,6 +368,12 @@ function SliderWeekRight() {
 
         setDisableForButtons()
 
+
+        shifts++;
+        localStorage.setItem('shifts', shifts)
+        localStorage.setItem('mathematicalSign', '-')
+
+
     })
 }
 
@@ -367,3 +390,83 @@ function removeDisableForButtons() {
     SliderWeekRightButton.removeAttribute('disabled', "disabled");
     SliderWeekLeftButton.removeAttribute('disabled', "disabled");
 }
+
+
+
+
+// Один из способов поиска.
+// Можно еще добавлять выделяемый цвет найденного текста или анимацию.
+function searchTaskFromBacklog() {
+    const buttonSearch = document.querySelector('.search__button');
+    const titles = document.querySelectorAll('.tasks-info__title');
+    buttonSearch.addEventListener('click', () => {
+        let inputValue = document.querySelector('.search__input').value.toLowerCase();
+
+        if (inputValue.length > 3) {
+            titles.forEach(title => {
+                let searchTitle = title.textContent.toLowerCase();
+                if (searchTitle.indexOf(inputValue) === -1) {
+                    title.parentNode.style.display = 'none';
+                }
+            })
+
+            document.querySelector('.backlog__text-info').style.display = 'none';
+
+        } else if (inputValue.length > 1 && inputValue.length <= 3) {
+            titles.forEach(title => {
+                title.parentNode.style.display = 'block';
+            })
+            document.querySelector('.backlog__text-info').style.display = 'block';
+        } else {
+            document.querySelector('.backlog__text-info').style.display = 'none';
+
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+//-------
+// function getTaskItem(cellDirection = '', shifts) {
+//     const taskInfoItem = document.querySelectorAll('.tasks-info__item');
+//     const personalCards = document.querySelectorAll('.personal-cards');
+//     const dataFromLocalStorage = JSON.parse(localStorage.getItem('ArrLocalStorage'));
+//     // const BacklogIdItem = dataFromLocalStorage.idDraggableElement;
+//     let liElement;
+//     dataFromLocalStorage.forEach(obj => {
+//         taskInfoItem.forEach(item => {
+//             if (item.id === obj.idDraggableElement) {
+//                 liElement = item
+//             }
+//         })
+//     })
+//     removeAndAddTasksClassFromAnDraggElem(liElement)
+//     dataFromLocalStorage.forEach(obj => {
+//         personalCards.forEach(card => {
+//             let posCell = card.children[obj.positionCell].dataset.positionCell;
+//             if (cellDirection === '+') {
+//                 if (card.dataset.idCard === obj.idUsers) {
+//                     card.children[+obj.positionCell + shifts].querySelector('.tasks').append(liElement)
+//                 }
+//             } else if (cellDirection === '-') {
+//                 if (card.dataset.idCard === obj.idUsers) {
+//                     console.log('card.children[+obj.positionCell - shifts] ', card.children[+obj.positionCell - shifts].dataset.calendarDate)
+//                     if (card.children[+obj.positionCell - shifts].dataset.calendarDate) {
+//                         card.children[+obj.positionCell - shifts].querySelector('.tasks').append(liElement)
+//                     }
+//                 }
+//             } else {
+//                 if (card.dataset.idCard === obj.idUsers) {
+//                     card.children[obj.positionCell].querySelector('.tasks').append(liElement)
+//                 }
+//             }
+
+//         })
+//     })
+// }
