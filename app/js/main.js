@@ -1,5 +1,5 @@
 
-// Можно в отдельный файл перекинуть
+// Можно в отдельный файл перекинуть url
 const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
 const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
 
@@ -21,7 +21,6 @@ let numberOfDaysInMonth = 0;
 let arrDate = [];
 let ARR_MONTH = [];
 
-let ArrLocalStorage = [];
 let shifts = 0;
 
 
@@ -59,7 +58,7 @@ async function getTasks(URL, repeatNtimes) {
         if (n === 1) {
             throw new Error;
         }
-        return await getTasks(URL, repeatNtimes);
+        return await getTasks(URL, repeatNtimes - 1);
     }
 }
 
@@ -79,7 +78,7 @@ async function getUsers(URL, repeatNtimes) {
         if (n === 1) {
             throw new Error;
         }
-        return await getTasks(URL, repeatNtimes);
+        return await getTasks(URL, repeatNtimes - 1);
     }
 }
 getUsers(URL_USERS, 10).then(result => showUsers(result))
