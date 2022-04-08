@@ -59,7 +59,7 @@ async function getTasks(URL, repeatNtimes) {
         if (n === 1) {
             throw new Error;
         }
-        return await getTasks(URL, repeatNtimes);
+        return await getTasks(URL, repeatNtimes - 1);
     }
 }
 
@@ -79,7 +79,7 @@ async function getUsers(URL, repeatNtimes) {
         if (n === 1) {
             throw new Error;
         }
-        return await getTasks(URL, repeatNtimes);
+        return await getTasks(URL, repeatNtimes - 1);
     }
 }
 getUsers(URL_USERS, 10).then(result => showUsers(result))
