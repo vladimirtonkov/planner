@@ -44,8 +44,8 @@
           <div class="backlog__inner">
             <h2 class="backlog__title">Backlog</h2>
             <img class="backlog__close-img" src="./images/close.png" alt="">
-            <form class="backlog__search-box search">
-              <input class="search__input" type="text" placeholder="Поиск" />
+            <form class="backlog__search-box search" name="search for the desired task">
+              <input class="search__input" type="text" action="" method="POST" placeholder="Поиск задачи" />
               <button class="search__button btn-reset">
                 <img
                   src="./images/search.png"
@@ -54,6 +54,7 @@
                 />
               </button>
             </form>
+            <p class="backlog__search-text">Вы ввели: <span class="backlog__enter-word"></span></p>
             <p class="backlog__text-info">Для поиска задачи: введите больше чем три символа</p>
             <ul class="backlog__tasks tasks-info"></ul>
           </div>

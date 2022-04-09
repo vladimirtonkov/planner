@@ -436,11 +436,9 @@ function removeDisableForButtons() {
 
 
 // Один из способов поиска.
-// Можно еще добавлять выделяемый цвет найденного текста.
 function searchTaskFromBacklog() {
     const buttonSearch = document.querySelector('.search__button');
     const titles = document.querySelectorAll('.tasks-info__title');
-
 
 
     buttonSearch.addEventListener('click', (event) => {
@@ -467,10 +465,17 @@ function searchTaskFromBacklog() {
                 title.parentNode.style.display = 'block';
             })
             document.querySelector('.backlog__text-info').style.display = 'block';
+
         } else {
             document.querySelector('.backlog__text-info').style.display = 'none';
-
         }
+
+        
+        document.querySelector('.backlog__search-text').style.display = 'block';
+        document.querySelector('.backlog__search-text span').innerHTML = inputValue.length > 0 ? inputValue
+            :
+            document.querySelector('.backlog__search-text').style.display = 'none';
+
     })
 }
 
