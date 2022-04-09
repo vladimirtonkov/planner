@@ -142,7 +142,6 @@ function showTaskData(dataTasks) {
     const personalCards = document.querySelectorAll('.personal-cards');
     const taskInfo = document.querySelector('.tasks-info');
     let cellAddUlTask = document.querySelectorAll('.personal-cards__item');
-    console.log('dataTasks ', dataTasks)
 
 
     addUlTaskForPersonalCardsItem(cellAddUlTask)
@@ -163,18 +162,18 @@ function showTaskData(dataTasks) {
                     // planEndDate
                     let planStart = item.planStartDate.split('-');
                     let planEnd = item.planEndDate.split('-');
-                    if ((+planEnd[1]) - (+planStart[1]) === 0) {
+                    if ((+planEnd[1]) - (+planStart[1]) === 0 && (+planEnd[2] - +planStart[2]) >= 0) {
                         cellAddExecutor[index].querySelector('.tasks').insertAdjacentHTML('beforeEnd', `
                                 <li class="tasks__item red-bg-color" data-title=${item.subject} ' ' ${item.description}>
                                     <span class="tasks__title">${item.subject}</span>
-                                    <span class="tasks__time">(${(+planEnd[2] - +planStart[2]) * 24} ч)</span>
+                                    <span class="tasks__time">(${((+planEnd[2] - +planStart[2]) * 24)} ч)</span>
                                 </li>
                         `)
                     } else {
                         cellAddExecutor[index].querySelector('.tasks').insertAdjacentHTML('beforeEnd', `
                                 <li class="tasks__item red-bg-color" data-title=${item.subject} ' ' ${item.description}>
                                     <span class="tasks__title">${item.subject}</span>
-                                    <span class="tasks__time">${item.description}</span>
+                                    <span class="tasks__time">Просрочено: ${item.description}</span>
                                 </li>
                         `)
                     }
@@ -441,13 +440,22 @@ function removeDisableForButtons() {
 function searchTaskFromBacklog() {
     const buttonSearch = document.querySelector('.search__button');
     const titles = document.querySelectorAll('.tasks-info__title');
-    buttonSearch.addEventListener('click', () => {
+
+
+
+    buttonSearch.addEventListener('click', (event) => {
         let inputValue = document.querySelector('.search__input').value.toLowerCase();
+
+        event.preventDefault();
+
+        titles.forEach(title => {
+            title.parentNode.style.display = 'block';
+        })
 
         if (inputValue.length > 3) {
             titles.forEach(title => {
                 let searchTitle = title.textContent.toLowerCase();
-                if (searchTitle.indexOf(inputValue) === -1) {
+                if (searchTitle.indexOf(inputValue.trim()) === -1) {
                     title.parentNode.style.display = 'none';
                 }
             })
