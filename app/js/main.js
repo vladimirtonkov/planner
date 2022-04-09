@@ -1,9 +1,9 @@
 
-// Можно в отдельный файл перекинуть url
+// Можно в отдельный файл перекинуть url и переменные
 const URL_TASKS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/tasks';
 const URL_USERS = 'https://varankin_dev.elma365.ru/api/extensions/2a38760e-083a-4dd0-aebc-78b570bfd3c7/script/users';
 
-// Можно все константы которые используются в проекте вынести в отдельные переменные
+
 
 const liElementFromBacklog = document.querySelectorAll('.tasks-info__item');
 const planner = document.querySelector('.planner');
@@ -21,7 +21,6 @@ let numberOfDaysInMonth = 0;
 let arrDate = [];
 let ARR_MONTH = [];
 
-let shifts = 0;
 
 
 setMonthAndYear();
@@ -55,7 +54,7 @@ async function getTasks(URL, repeatNtimes) {
         const data = await response.json();
         return data;
     } catch (error) {
-        if (n === 1) {
+        if (repeatNtimes === 1) {
             throw new Error;
         }
         return await getTasks(URL, repeatNtimes - 1);
@@ -75,7 +74,7 @@ async function getUsers(URL, repeatNtimes) {
         const data = await response.json();
         return data;
     } catch (error) {
-        if (n === 1) {
+        if (repeatNtimes === 1) {
             throw new Error;
         }
         return await getTasks(URL, repeatNtimes - 1);
@@ -129,47 +128,75 @@ function setEventDragOnDrop() {
 }
 
 
-function showTaskData(dataTasks) {
-    const personalCards = document.querySelectorAll('.personal-cards');
-    const taskInfo = document.querySelector('.tasks-info');
-    let cellAddUlTask = document.querySelectorAll('.personal-cards__item');
-    let countElement = []
-    dataTasks.forEach((item, counter) => {
-        // Если у задачи не указан исполнитель (executor)
-        if (item.executor !== null) {
-            let cellAddExecutor = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
-            for (let index = 0; index < cellAddExecutor.length; index++) {
-                if (cellAddExecutor[index].dataset.calendarDate === item.planStartDate) {
-                    cellAddExecutor[index].insertAdjacentHTML('beforeEnd', `
-                        <ul class="tasks">
-                            <li class="tasks__item" data-title=${item.subject} ' ' ${item.description}>
-                                <span class="tasks__title">${item.subject}</span>
-                                <span class="tasks__time">${item.description}</span>
-                            </li>
-                        </ul>
-                    `)
-                }
-            }
-        } else {
-            taskInfo.insertAdjacentHTML('beforeEnd', `
-            <li class="tasks-info__item" id=${counter} data-start-date=${item.planStartDate} draggable="true">
-                <span class="tasks-info__title">${item.subject}</span>
-                <span class="tasks-info__text">${item.description}</span>
-            </li>
-        `)
-        }
-    })
+function addUlTaskForPersonalCardsItem(cellAddUlTask) {
     for (let index = 0; index < cellAddUlTask.length; index++) {
-        if (!cellAddUlTask[index].closest('.personal-cards__executor') && cellAddUlTask[index].querySelector('.tasks') === null) {
+        if (!cellAddUlTask[index].closest('.personal-cards__executor')) {
             cellAddUlTask[index].insertAdjacentHTML('beforeEnd', `
                         <ul class="tasks"></ul>
                     `)
         }
     }
+}
+
+function showTaskData(dataTasks) {
+    const personalCards = document.querySelectorAll('.personal-cards');
+    const taskInfo = document.querySelector('.tasks-info');
+    let cellAddUlTask = document.querySelectorAll('.personal-cards__item');
+    console.log('dataTasks ', dataTasks)
+
+
+    addUlTaskForPersonalCardsItem(cellAddUlTask)
+
+    dataTasks.forEach(item => {
+        // Если у задачи не указан исполнитель (executor)
+        if (item.executor !== null) {
+            let cellAddExecutor = personalCards[item.executor - 1].querySelectorAll('.personal-cards__item');
+            for (let index = 0; index < cellAddExecutor.length; index++) {
+                if (cellAddExecutor[index].dataset.calendarDate === item.planStartDate) {
+                    cellAddExecutor[index].querySelector('.tasks').insertAdjacentHTML('beforeEnd', `
+                            <li class="tasks__item green-bg-color" data-title=${item.subject} ' ' ${item.description}>
+                                <span class="tasks__title">${item.subject}</span>
+                                <span class="tasks__time">${item.description}</span>
+                            </li>
+                    `)
+                } else if (cellAddExecutor[index].dataset.calendarDate === item.planEndDate) {
+                    // planEndDate
+                    let planStart = item.planStartDate.split('-');
+                    let planEnd = item.planEndDate.split('-');
+                    if ((+planEnd[1]) - (+planStart[1]) === 0) {
+                        cellAddExecutor[index].querySelector('.tasks').insertAdjacentHTML('beforeEnd', `
+                                <li class="tasks__item red-bg-color" data-title=${item.subject} ' ' ${item.description}>
+                                    <span class="tasks__title">${item.subject}</span>
+                                    <span class="tasks__time">(${(+planEnd[2] - +planStart[2]) * 24} ч)</span>
+                                </li>
+                        `)
+                    } else {
+                        cellAddExecutor[index].querySelector('.tasks').insertAdjacentHTML('beforeEnd', `
+                                <li class="tasks__item red-bg-color" data-title=${item.subject} ' ' ${item.description}>
+                                    <span class="tasks__title">${item.subject}</span>
+                                    <span class="tasks__time">${item.description}</span>
+                                </li>
+                        `)
+                    }
+                }
+            }
+        }
+    })
+
+
+    dataTasks.forEach((item) => {
+        taskInfo.insertAdjacentHTML('beforeEnd', `
+                <li class="tasks-info__item" id=${item.id} data-start-date=${item.planStartDate} draggable="true">
+                    <span class="tasks-info__title">${item.subject}</span>
+                    <span class="tasks-info__text">${item.description}</span>
+                </li>
+        `)
+    })
 
 
     setEventDragOnDrop();
     searchTaskFromBacklog();
+
 
     if (document.querySelector('.container').closest('.opacity-background')) {
         document.querySelector('.container').classList.remove('opacity-background')
@@ -238,6 +265,25 @@ function drop(event) {
         draggableElement.setAttribute('data-title', `${title}` + `${text}`);
         event.currentTarget.querySelector('.tasks').appendChild(draggableElement);
 
+
+
+        // for post
+        // let obj = {
+        //     creationAuthor: 1,
+        //     creationDate: `${CURRENT_YEAR}-${MONTH}-${DAY}`,
+        //     // description: draggableElement.querySelector('.tasks__text').textContent,
+        //     description: draggableElement.children[1].textContent,
+        //     endDate: "",
+        //     executor: event.currentTarget.parentNode.dataset.idCard,
+        //     id: generationRandomId(),
+        //     order: 1,
+        //     planEndDate: `${CURRENT_YEAR}-${MONTH}-${DAY + randomPlannEndDate()}`,
+        //     planStartDate: `${CURRENT_YEAR}-${MONTH}-${DAY}`,
+        //     status: 1,
+        //     subject: draggableElement.dataset.title
+        // }
+        // setCurrentDataFromTasksforMethodPost(obj);
+
     } else {
 
         let currentParent = event.currentTarget.parentNode.children;
@@ -257,6 +303,7 @@ function drop(event) {
 
 
 }
+
 
 
 
@@ -340,7 +387,7 @@ function SliderWeekRight() {
         if (DAY + 6 > numberOfDaysInMonth) {
             MONTH++;
             if (MONTH >= 12) {
-                // MONTH = 0;
+                // MONTH = 0;!
                 MONTH = 11;
                 DAY--;
                 SliderWeekRightButton.setAttribute('disabled', "disabled");
@@ -389,9 +436,8 @@ function removeDisableForButtons() {
 
 
 
-
 // Один из способов поиска.
-// Можно еще добавлять выделяемый цвет найденного текста или анимацию.
+// Можно еще добавлять выделяемый цвет найденного текста.
 function searchTaskFromBacklog() {
     const buttonSearch = document.querySelector('.search__button');
     const titles = document.querySelectorAll('.tasks-info__title');
@@ -421,8 +467,50 @@ function searchTaskFromBacklog() {
 }
 
 
+// function randomPlannEndDate() {
+//     let randomDate = Math.floor(Math.random() * ((DAY + 5) - DAY + 1) + DAY + 5);
+//     console.log('randomDate ', randomDate)
+//     return randomDate;
+// }
 
-//-------
+// function generationRandomId() {
+//     let strId = '0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+
+//     let word = ''
+//     let lenghtStr = strId.length - 1;
+
+//     for (let i = 0; i < 20; i++) {
+//         let rand = Math.floor(Math.random() * lenghtStr);
+//         word += strId[rand];
+//     }
+
+//     return word;
+// }
+
+//  ------ POST -----
+// async function setCurrentDataFromTasksforMethodPost(data) {
+//     try {
+//         const response = await fetch(URL_TASKS, {
+//             mode: "no-cors",
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(data)
+//         });
+//         const json = await response.json();
+//         return json;
+//     } catch (error) {
+//         console.log('ERROR');
+//     }
+// }
+
+
+
+
+
+
+//-------------------------------------------------
 // function getTaskItem(cellDirection = '', shifts) {
 //     const taskInfoItem = document.querySelectorAll('.tasks-info__item');
 //     const personalCards = document.querySelectorAll('.personal-cards');
