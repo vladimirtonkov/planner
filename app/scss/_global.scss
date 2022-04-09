@@ -44,9 +44,9 @@ body {
 
 .container {
 	position: absolute;
-	top: 50%;
+	top: 60%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -60%);
 	margin: 0 auto;
 	// max-width: 1420px;
 	width: 100%;
@@ -55,6 +55,7 @@ body {
 	&__content {
 		display: flex;
 		justify-content: space-between;
+		height: $defaultHeight;
 		// background-color: $default;
 	}
 }
