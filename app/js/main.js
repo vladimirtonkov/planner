@@ -356,7 +356,6 @@ function SliderWeekLeft() {
         if (DAY === 0) {
             MONTH--;
             if (MONTH <= -1) {
-                // MONTH = 11;
                 DAY++
                 MONTH = 0;
                 SliderWeekLeftButton.setAttribute('disabled', "disabled");
@@ -404,7 +403,6 @@ function SliderWeekRight() {
         if (DAY + 6 > numberOfDaysInMonth) {
             MONTH++;
             if (MONTH >= 12) {
-                // MONTH = 0;!
                 MONTH = 11;
                 DAY--;
                 SliderWeekRightButton.setAttribute('disabled', "disabled");
@@ -482,7 +480,7 @@ function searchTaskFromBacklog() {
             titles.forEach(title => {
                 title.parentNode.style.display = 'block';
             })
-            
+
             document.querySelector('.backlog__text-info').style.display = 'block';
 
         } else {
